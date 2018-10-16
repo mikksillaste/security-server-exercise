@@ -6,7 +6,19 @@ const morgan = require('morgan');
 
 const bodyParser = require('body-parser');
 const app = express();
-app.use(cors());
+//cors option to allow access to aneagoie.github.io, and example2.com
+const whitelist = ['https://aneagoie.github.io', 'http://example2.com'];
+const corsOptions = {
+  origin: function (origin, callback) {
+      if(whitelist.indexOf(origin) !== -1) {
+        callback(null, true)
+      } else {
+        callback(new Error('Not allowed by CORS'))
+      }
+  }
+};
+
+app.use(cors(corsOptions));
 app.use(helmet());
 app.use(bodyParser.json());
 app.use(morgan('tiny'));
